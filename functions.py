@@ -26,3 +26,13 @@ def day_number(year, month, day):
            - (7 * (year + ((month + 9) // 12)) // 4) 
            - (3 * ((year + ((month - 9) // 7)) // 100 + 1) // 4) 
            + (275 * month // 9) + day - 730515)
+
+def sun_mean_anomaly(day_number):
+    return 356.0470 + (0.9856002585 * day_number)
+
+def sun_argument_of_perihelion(day_number):
+    return 282.9404 + (4.70935e-5 * day_number)
+
+def sun_mean_longitude(day_number):
+    return sun_mean_anomaly(day_number) + \
+            sun_argument_of_perihelion(day_number)
