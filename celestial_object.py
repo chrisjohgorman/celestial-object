@@ -1,8 +1,7 @@
-import abc
 from functions import *
 from math import *
 
-class CelestialObject(metaclass=abc.ABCMeta):
+class CelestialObject():
 
     def __init__(self, day_number, observer_latitude,
             observer_longitude, utc):
@@ -17,27 +16,21 @@ class CelestialObject(metaclass=abc.ABCMeta):
                 self.day_number, self.observer_latitude,
                 self.observer_longitude, self.utc)
 
-    @abc.abstractmethod
     def longitude_of_the_ascending_node(self):
         pass
   
-    @abc.abstractmethod
     def inclination_to_the_ecliptic(self):
         pass
 
-    @abc.abstractmethod
     def argument_of_perihelion(self):
         pass
 
-    @abc.abstractmethod
     def semi_major_axis(self):
         pass
 
-    @abc.abstractmethod
     def eccentricity(self):
         pass
 
-    @abc.abstractmethod
     def mean_anomaly(self):
         pass
 
@@ -628,3 +621,45 @@ class Neptune(CelestialObject):
     def mean_anomaly(self): 
         return self.revolution_to_degree(260.2471 + 0.005995147 * \
                 self.day_number)
+
+
+class Pluto(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def P(self):
+        return 238.95 + 0.003968789 * self.day_number
+
+    def S(self):
+        return 50.03 + 0.033459652 * self.day_number
+
+    def ecliptic_latitude(self):
+        return -3.9082 \
+             - 5.453 * sind(self.P()) - 14.975 * cosd(self.P()) \
+             + 3.527 * sind(2*self.P()) + 1.673 * cosd(2*self.P()) \
+             - 1.051 * sind(3*self.P()) + 0.328 * cosd(3*self.P()) \
+             + 0.179 * sind(4*self.P()) - 0.292 * cosd(4*self.P()) \
+             + 0.019 * sind(5*self.P()) + 0.100 * cosd(5*self.P()) \
+             - 0.031 * sind(6*self.P()) - 0.026 * cosd(6*self.P()) \
+             + 0.011 * cosd(self.S()-self.P())
+
+    def ecliptic_longitude(self):
+        return 238.9508  +  0.00400703 * self.day_number \
+            - 19.799 * sind(self.P()) + 19.848 * cosd(self.P()) \
+             + 0.897 * sind(2*self.P()) - 4.956 * cosd(2*self.P()) \
+             + 0.610 * sind(3*self.P()) + 1.211 * cosd(3*self.P()) \
+             - 0.341 * sind(4*self.P()) - 0.190 * cosd(4*self.P()) \
+             + 0.128 * sind(5*self.P()) - 0.034 * cosd(5*self.P()) \
+             - 0.038 * sind(6*self.P()) + 0.031 * cosd(6*self.P()) \
+             + 0.020 * sind(self.S()-self.P()) \
+             - 0.010 * cosd(self.S()-self.P())
+
+    def distance(self):
+        return 40.72 \
+           + 6.68 * sind(self.P()) + 6.90 * cosd(self.P()) \
+           - 1.18 * sind(2*self.P()) - 0.03 * cosd(2*self.P()) \
+           + 0.15 * sind(3*self.P()) - 0.14 * cosd(3*self.P())
