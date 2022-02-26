@@ -149,17 +149,14 @@ class CelestialObject(metaclass=abc.ABCMeta):
     def z_heliocentric_perturbed(self):
         return self.distance() * sind(self.ecliptic_latitude())
 
-    @abc.abstractmethod
     def x_geocentric(self):
-        pass
+        return self.Sun.x_geocentric() + self.x_heliocentric_perturbed() 
 
-    @abc.abstractmethod
     def y_geocentric(self):
-        pass
+        return self.Sun.y_geocentric() + self.y_heliocentric_perturbed()
 
-    @abc.abstractmethod
     def z_geocentric(self):
-        pass
+        return self.z_heliocentric_perturbed()
 
     def x_equatorial(self):
         return self.x_geocentric()
@@ -421,11 +418,30 @@ class Mercury(CelestialObject):
         return self.revolution_to_degree(168.6562 + 4.0923344368 * \
                 self.day_number)
 
-    def x_geocentric(self):
-        return self.Sun.x_geocentric() + self.x_heliocentric_perturbed() 
+class Venus(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
 
-    def y_geocentric(self):
-        return self.Sun.y_geocentric() + self.y_heliocentric_perturbed()
+    def longitude_of_the_ascending_node(self):
+        return 76.6799 + 2.46590e-5 * self.day_number
 
-    def z_geocentric(self):
-        return self.z_heliocentric_perturbed()
+    def inclination_to_the_ecliptic(self):
+        return 3.3946 + 2.75e-8 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 54.8910 + 1.38374e-5 * self.day_number
+
+    def semi_major_axis(self):
+        return 0.723330
+
+    def eccentricity(self):
+        return 0.006773 - 1.302e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(48.0052 + 1.6021302244 * \
+                self.day_number)
+
