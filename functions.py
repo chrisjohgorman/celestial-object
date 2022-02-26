@@ -36,3 +36,13 @@ def sun_argument_of_perihelion(day_number):
 def sun_mean_longitude(day_number):
     return sun_mean_anomaly(day_number) + \
             sun_argument_of_perihelion(day_number)
+
+def jupiter_mean_anomaly(day_number):
+    return 19.8950 + (0.0830853001 * day_number)
+
+def saturn_mean_anomaly(day_number):
+    return 316.9670 + (0.0334442282 * day_number)
+
+def uranus_mean_anomaly(day_number):
+    return 142.5905 + (0.011725806 * day_number)
+
