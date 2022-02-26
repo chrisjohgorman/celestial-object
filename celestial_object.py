@@ -86,7 +86,8 @@ class CelestialObject(metaclass=abc.ABCMeta):
                 * sqrt(1 - self.eccentricity() ** 2)
 
     def distance(self): 
-        return sqrt(self.x_anomaly() ** 2 + self.y_anomaly() ** 2)
+        return sqrt(self.x_anomaly() ** 2 + self.y_anomaly() ** 2) + \
+                self.perturbations_of_distance()
 
     def true_anomaly(self):
         return atan2d(self.y_anomaly(), self.x_anomaly())
@@ -127,12 +128,15 @@ class CelestialObject(metaclass=abc.ABCMeta):
                 sind(self.inclination_to_the_ecliptic())
 
     def ecliptic_longitude(self):
-        return atan2d(self.y_heliocentric(), self.x_heliocentric())
+        return self.revolution_to_degree(atan2d(self.y_heliocentric(), \
+                self.x_heliocentric()) + \
+                self.perturbations_of_longitude())
 
     def ecliptic_latitude(self):
         return atan2d(self.z_heliocentric(), \
                 sqrt(self.x_heliocentric() ** 2 + \
-                self.y_heliocentric() ** 2))
+                self.y_heliocentric() ** 2)) + \
+                self.perturbations_of_latitude()
 
     def x_heliocentric_perturbed(self):
         return self.distance() * cosd(self.ecliptic_longitude()) * \
@@ -221,6 +225,15 @@ class CelestialObject(metaclass=abc.ABCMeta):
     def altitude(self):
         return asind(self.z_horizontal())
 
+    def perturbations_of_distance(self):
+        return 0
+
+    def perturbations_of_latitude(self):
+        return 0
+
+    def perturbations_of_longitude(self):
+        return 0
+
 class Sun(CelestialObject):
 
     def __init__(self, day_number, observer_latitude,
@@ -258,14 +271,6 @@ class Sun(CelestialObject):
     def y_anomaly(self):
         return sind(self.eccentric_anomaly()) * \
                 sqrt(1 - self.eccentricity() ** 2)
-
-    """ Should work from CelestialObject class
-    def distance(self): 
-        return sqrt(self.x_anomaly() ** 2 + self.y_anomaly() ** 2)
-
-    def true_anomaly(self):
-        return atan2d(self.y_anomaly(), self.x_anomaly())
-    """
 
     def longitude(self):
         return self.revolution_to_degree(self.true_anomaly() \
@@ -306,6 +311,88 @@ class Moon(CelestialObject):
     def mean_anomaly(self): 
         return self.revolution_to_degree(115.3654 \
                 + 13.0649929509 * self.day_number)
+
+    def perturbations_of_distance(self):
+        return -0.58 * cosd(self.mean_anomaly() - 2 * \
+                self.mean_elongation()) -0.46 * cosd(2 * \
+                self.mean_elongation())
+
+    def perturbations_of_latitude(self):
+        return -0.173 * sind(self.argument_of_latitude() - \
+                2 * self.mean_elongation()) -0.055 * \
+                sind(self.mean_anomaly() - self.argument_of_latitude() \
+                - 2 * self.mean_elongation()) -0.046 * \
+                sind(self.mean_anomaly() + self.argument_of_latitude() \
+                - 2 * self.mean_elongation())  +0.033 * \
+                sind(self.argument_of_latitude() + 2 * \
+                self.mean_elongation()) +0.017 * sind( 2 * \
+                self.mean_anomaly() + self.argument_of_latitude())
+
+    def perturbations_of_longitude(self):
+        return -1.274 * sind(self.mean_anomaly() -2\
+                * self.mean_elongation()) +0.658 * \
+                sind(2*self.mean_elongation()) -0.186 * \
+                sind(sun_mean_anomaly(self.day_number)) -0.059 * \
+                sind(2*self.mean_anomaly() -2 * \
+                self.mean_elongation()) -0.057 * \
+                sind(self.mean_anomaly() -2 * self.mean_elongation() \
+                + sun_mean_anomaly(self.day_number)) +0.053 * \
+                sind(self.mean_anomaly() +2 * self.mean_elongation()) \
+                +0.046 * sind(2*self.mean_elongation() - \
+                sun_mean_anomaly(self.day_number)) +0.041 * \
+                sind(self.mean_anomaly() - \
+                sun_mean_anomaly(self.day_number)) -0.035 * \
+                sind(self.mean_elongation()) -0.031 * \
+                sind(self.mean_anomaly() + \
+                sun_mean_anomaly(self.day_number)) -0.015 * \
+                sind(2* self.argument_of_latitude() -2 * \
+                self.mean_elongation()) +0.011 * \
+                sind(self.mean_anomaly() -4 * self.mean_elongation())
+
+    def mean_elongation(self):
+        return self.mean_longitude() - sun_mean_longitude(self.day_number)
+
+    def argument_of_latitude(self):
+        return self.mean_longitude() - \
+                self.longitude_of_the_ascending_node()
+
+    def x_geocentric(self):
+        return self.x_heliocentric_perturbed() 
+
+    def y_geocentric(self):
+        return self.y_heliocentric_perturbed()
+
+    def z_geocentric(self):
+        return self.z_heliocentric_perturbed()
+
+    def parallax(self):
+        return asind(1 / self.distance())
+
+    def topocentric_altitude(self):
+        return self.altitude() - self.parallax() * cosd(self.altitude())
+
+    def geocentric_latitude(self):
+        return self.observer_latitude - 0.1924 * sind(2 * \
+                self.observer_latitude)
+
+    def rho(self):
+        return 0.99833 + 0.00167 * cosd(2 * self.observer_latitude)
+
+    def auxillary_angle(self):
+        return atand(tand(self.geocentric_latitude()) / \
+                cosd(self.hour_angle()))
+
+    def topocentric_right_angle(self):
+        return self.revolution_to_degree(self.right_ascension() - \
+                self.parallax() * self.rho() * \
+                cosd(self.geocentric_latitude()) * \
+                sind(self.hour_angle()) / cosd(self.declination()))
+
+    def topocentric_declination(self):
+        return self.declination() - self.parallax() * self.rho() * \
+                sind(self.geocentric_latitude()) * sind( \
+                self.auxillary_angle() - self.declination()) / \
+                sind(self.auxillary_angle())
 
 class Mercury(CelestialObject):
     
