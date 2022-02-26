@@ -379,7 +379,7 @@ class Moon(CelestialObject):
         return atand(tand(self.geocentric_latitude()) / \
                 cosd(self.hour_angle()))
 
-    def topocentric_right_angle(self):
+    def topocentric_right_ascension(self):
         return self.revolution_to_degree(self.right_ascension() - \
                 self.parallax() * self.rho() * \
                 cosd(self.geocentric_latitude()) * \
