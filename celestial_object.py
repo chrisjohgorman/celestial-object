@@ -445,3 +445,186 @@ class Venus(CelestialObject):
         return self.revolution_to_degree(48.0052 + 1.6021302244 * \
                 self.day_number)
 
+class Mars(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def longitude_of_the_ascending_node(self):
+        return 49.5574 + 2.11081e-5 * self.day_number
+
+    def inclination_to_the_ecliptic(self):
+        return 1.8497 - 1.78e-8 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 286.5016 + 2.92961e-5 * self.day_number
+
+    def semi_major_axis(self):
+        return 1.523688
+
+    def eccentricity(self):
+        return 0.093405 + 2.516e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(18.6021 + 0.5240207766 * \
+                self.day_number)
+
+class Jupiter(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def longitude_of_the_ascending_node(self):
+        return 100.4542 + 2.76854e-5 * self.day_number
+
+    def inclination_to_the_ecliptic(self):
+        return 1.3030 - 1.557e-7 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 273.8777 + 1.64505e-5 * self.day_number
+
+    def semi_major_axis(self):
+        return 5.20256
+
+    def eccentricity(self):
+        return 0.048498 + 4.469e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(19.8950 + 0.0830853001 * \
+                self.day_number)
+
+    def perturbations_of_longitude(self):
+        return -0.332 * sind(2 * \
+                jupiter_mean_anomaly(self.day_number) \
+                - 5 * saturn_mean_anomaly(self.day_number) - \
+                67.6) -0.056 * sind(2 * \
+                jupiter_mean_anomaly(self.day_number) - \
+                2 * saturn_mean_anomaly(self.day_number) + 21) \
+                +0.042 * sind(3 * \
+                jupiter_mean_anomaly(self.day_number) \
+                - 5 * saturn_mean_anomaly(self.day_number) + \
+                21) -0.036 * sind( \
+                jupiter_mean_anomaly(self.day_number) - \
+                2 * saturn_mean_anomaly(self.day_number)) \
+                +0.022 * cosd( \
+                jupiter_mean_anomaly(self.day_number) - \
+                saturn_mean_anomaly(self.day_number)) \
+                +0.023 * sind(2 * \
+                jupiter_mean_anomaly(self.day_number) - \
+                3 * saturn_mean_anomaly(self.day_number) + 52) \
+                -0.016 * sind( \
+                jupiter_mean_anomaly(self.day_number) - \
+                5 * saturn_mean_anomaly(self.day_number) - 69)
+
+class Saturn(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def longitude_of_the_ascending_node(self):
+        return 113.6634 + 2.38980e-5 * self.day_number
+
+    def inclination_to_the_ecliptic(self):
+        return 2.4886 - 1.081e-7 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 339.3939 + 2.97661e-5 * self.day_number
+
+    def semi_major_axis(self):
+        return 9.55475
+
+    def eccentricity(self):
+        return 0.055546 - 9.499e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(316.9670 + 0.0334442282 * \
+                self.day_number)
+
+    def perturbations_of_longitude(self):
+        return +0.812 * sind(2*jupiter_mean_anomaly(self.day_number) \
+                - 5*saturn_mean_anomaly(self.day_number) - 67.6) \
+                -0.229 * cosd(2*jupiter_mean_anomaly(self.day_number) \
+                - 4*saturn_mean_anomaly(self.day_number) - 2) \
+                +0.119 * sind(jupiter_mean_anomaly(self.day_number) \
+                - 2*saturn_mean_anomaly(self.day_number) - 3) \
+                +0.046 * sind(2*jupiter_mean_anomaly(self.day_number) \
+                - 6*saturn_mean_anomaly(self.day_number) - 69) \
+                +0.014 * sind(jupiter_mean_anomaly(self.day_number) \
+                - 3*saturn_mean_anomaly(self.day_number) + 32)
+
+    def perturbations_of_latitude(self):
+        return -0.020 * cosd(2*jupiter_mean_anomaly(self.day_number) \
+                - 4*saturn_mean_anomaly(self.day_number) - 2) \
+                +0.018 * sind(2*jupiter_mean_anomaly(self.day_number) \
+                - 6*saturn_mean_anomaly(self.day_number) - 49)
+
+class Uranus(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def longitude_of_the_ascending_node(self):
+        return 74.0005 + 1.3978e-5 * self.day_number
+
+    def inclination_to_the_ecliptic(self):
+        return 0.7733 + 1.9e-8 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 96.6612 + 3.0565e-5 * self.day_number
+
+    def semi_major_axis(self):
+        return 19.18171 - 1.55e-8 * self.day_number
+
+    def eccentricity(self):
+        return 0.047318 + 7.45e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(142.5905 + 0.011725806 * \
+                self.day_number)
+
+    def perturbations_of_longitude(self):
+        return +0.040 * sind(saturn_mean_anomaly(self.day_number) \
+                - 2*uranus_mean_anomaly(self.day_number) + 6) \
+                +0.035 * sind(saturn_mean_anomaly(self.day_number) \
+                - 3*uranus_mean_anomaly(self.day_number) + 33) \
+                -0.015 * sind(jupiter_mean_anomaly(self.day_number) \
+                - uranus_mean_anomaly(self.day_number) + 20)
+
+class Neptune(CelestialObject):
+    
+    def __init__(self, day_number, observer_latitude,
+            observer_longitude, utc):
+        super().__init__(day_number, observer_latitude,
+                observer_longitude, utc)
+        self.Sun = Sun(day_number, observer_latitude, observer_longitude, utc)
+
+    def longitude_of_the_ascending_node(self):
+        return 131.7806 + 3.0173e-5 * self.day_number
+
+    def inclination_to_the_ecliptic(self):
+        return 1.7700 - 2.55e-7 * self.day_number
+
+    def argument_of_perihelion(self):
+        return 272.8461 - 6.027e-6 * self.day_number
+
+    def semi_major_axis(self):
+        return 30.05826 + 3.313e-8 * self.day_number
+
+    def eccentricity(self):
+        return 0.008606 + 2.15e-9 * self.day_number
+
+    def mean_anomaly(self): 
+        return self.revolution_to_degree(260.2471 + 0.005995147 * \
+                self.day_number)
